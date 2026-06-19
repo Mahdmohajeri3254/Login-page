@@ -14,7 +14,10 @@ class LoginResources(MethodView) :
     def post(self , login_data) :
         pass
 
-class Page(MethodView) :
+class LoginPage(MethodView) :
     def get(self) :
-        return render_template('auth.html')
+        return render_template('login.html')
 
+class RegisterPage(MethodView) :
+    def get(self) :
+        return render_template('register.html')
