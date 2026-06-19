@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Register</title>
+  <style>
+    :root {
+      --bg: #f4f7ff;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --primary-soft: #eef2ff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+      display: grid;
+      place-items: center;
+      color: var(--text);
+    }
+
+    .auth-shell {
+      width: min(100%, 960px);
+      padding: 1.5rem;
+    }
+
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      min-height: 540px;
+    }
+
+    .auth-panel {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .auth-sidebar {
+      background: linear-gradient(180deg, #4f46e5 0%, #6366f1 100%);
+      color: #fff;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .auth-sidebar h2 {
+      margin: 0;
+      font-size: clamp(2rem, 2.5vw, 2.5rem);
+      line-height: 1.05;
+    }
+
+    .auth-sidebar p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .toggle-group button {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 0.85rem 1.25rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .toggle-group button.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: rgba(79, 70, 229, 0.2);
+    }
+
+    .form-group {
+      display: grid;
+      gap: 1rem;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f8fafc;
+      padding: 0.95rem 1rem;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(79, 70, 229, 0.5);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+      background: #fff;
+    }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .submit-row button {
+      border: none;
+      border-radius: 16px;
+      padding: 0.95rem 1.45rem;
+      font-size: 1rem;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .submit-row button:hover {
+      transform: translateY(-1px);
+      background: #4338ca;
+    }
+
+    .message {
+      font-size: 0.95rem;
+      color: #f43f5e;
+      min-height: 1.25rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-switch {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .form-switch button {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      font: inherit;
+    }
+
+    .auth-footer {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    @media (max-width: 840px) {
+      .auth-card {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-sidebar {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="auth-card">
+      <section class="auth-sidebar">
+        <div>
+          <h2>Welcome back!</h2>
+          <p>Sign in to access your account or create a new one to get started with our secure login experience.</p>
+        </div>
+        <div class="auth-footer">
+          <p>Secure forms. Responsive layout. Built for modern Flask and web apps.</p>
+        </div>
+      </section>
+
+      <section class="auth-panel">
+        <div class="toggle-group" role="tablist" aria-label="Authentication tabs">
+          <button id="loginTab" class="active" type="button">Login</button>
+          <button id="registerTab" type="button">Register</button>
+        </div>
+
+        <form id="loginForm" class="form-group" method="post" action="/login" novalidate>
+          <div>
+            <h3>Login</h3>
+            <p>Enter your credentials to sign in.</p>
+          </div>
+
+          <label for="loginEmail">
+            Email
+            <input id="loginEmail" name="email" type="email" placeholder="you@example.com" required />
+          </label>
+
+          <label for="loginPassword">
+            Password
+            <input id="loginPassword" name="password" type="password" placeholder="••••••••" required minlength="6" />
+          </label>
+
+          <div class="message" id="loginMessage"></div>
+
+          <div class="submit-row">
+            <button type="submit">Sign in</button>
+            <div class="form-switch">
+              <span>New here?</span>
+              <button type="button" id="showRegister">Create account</button>
+            </div>
+          </div>
+        </form>
+
+        <form id="registerForm" class="form-group hidden" method="post" action="/register" novalidate>
+          <div>
+            <h3>Create account</h3>
+            <p>Use your email to register a new account.</p>
+          </div>
+
+          <label for="registerName">
+            Full name
+            <input id="registerName" name="name" type="text" placeholder="Your name" required />
+          </label>
+
+          <label for="registerEmail">
+            Email
+            <input id="registerEmail" name="email" type="email" placeholder="you@example.com" required />
+          </label>
+
+          <label for="registerPassword">
+            Password
+            <input id="registerPassword" name="password" type="password" placeholder="Create a password" required minlength="6" />
+          </label>
+
+          <label for="registerConfirm">
+            Confirm password
+            <input id="registerConfirm" name="confirm_password" type="password" placeholder="Repeat your password" required minlength="6" />
+          </label>
+
+          <div class="message" id="registerMessage"></div>
+
+          <div class="submit-row">
+            <button type="submit">Register</button>
+            <div class="form-switch">
+              <span>Already have an account?</span>
+              <button type="button" id="showLogin">Sign in</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+    const loginMessage = document.getElementById('loginMessage');
+    const registerMessage = document.getElementById('registerMessage');
+
+    function setActiveTab(tab) {
+      const isLogin = tab === 'login';
+      loginTab.classList.toggle('active', isLogin);
+      registerTab.classList.toggle('active', !isLogin);
+      loginForm.classList.toggle('hidden', !isLogin);
+      registerForm.classList.toggle('hidden', isLogin);
+      loginMessage.textContent = '';
+      registerMessage.textContent = '';
+    }
+
+    loginTab.addEventListener('click', () => setActiveTab('login'));
+    registerTab.addEventListener('click', () => setActiveTab('register'));
+    showRegister.addEventListener('click', () => setActiveTab('register'));
+    showLogin.addEventListener('click', () => setActiveTab('login'));
+
+    loginForm.addEventListener('submit', (event) => {
+      if (!loginForm.checkValidity()) {
+        event.preventDefault();
+        loginMessage.textContent = 'Please fill out both email and password.';
+      }
+    });
+
+    registerForm.addEventListener('submit', (event) => {
+      if (!registerForm.checkValidity()) {
+        event.preventDefault();
+        registerMessage.textContent = 'Please complete all registration fields.';
+        return;
+      }
+
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('registerConfirm').value;
+
+      if (password !== confirm) {
+        event.preventDefault();
+        registerMessage.textContent = 'Passwords do not match. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>
